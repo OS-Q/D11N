@@ -4,6 +4,9 @@
 #include "Arduino.h"
 #include "utility/LinkedList.h"
 
+typedef uint8_t u8;
+typedef uint16_t u16;
+
 class ModbusRTUSlaveWordAddress
 {
 	public : 
@@ -25,18 +28,15 @@ class ModbusRTUSlaveBitAddress
 class ModbusRTUSlave
 {
 	public : 
-		ModbusRTUSlave(byte slaveId, HardwareSerial *ser, u8 conrolPinNumber);
+		ModbusRTUSlave(byte Slave, HardwareSerial *ser);
 		void begin(int baudrate);
 		boolean addWordArea(u16 Address, u16* values, int cnt);
 		boolean addBitArea(u16 Address, u8* values, int cnt);
 		void process();
 
 	private:
-		byte const slave;
-		HardwareSerial * const ser;
-		u8 const controlPin;
-		bool isReading;
-
+		byte slave;
+		HardwareSerial *ser;
 		LinkedList<ModbusRTUSlaveWordAddress*>  *words;
 		LinkedList<ModbusRTUSlaveBitAddress*>  *bits;
 		ModbusRTUSlaveWordAddress* getWordAddress(u16 Addr);
@@ -47,11 +47,6 @@ class ModbusRTUSlave
 		int ResCnt=0;
 		unsigned long lastrecv;
 		void getCRC(byte* pby, int arsize, int startindex, int nSize, byte* byFirstReturn, byte* bySecondReturn);
-
-		void switchToReadingIfNotReadingNow();
-		bool isDataAvail();
-		int doRead();
-		void doWrite(byte*, uint32_t);
 };
 
 const byte auchCRCHi[] = {
