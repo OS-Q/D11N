@@ -5,11 +5,11 @@
 #include "utility/LinkedList.h"
 
 typedef uint8_t u8;
-typedef uint16_t u16;
+// typedef uint16_t u16;
 
 class ModbusRTUSlaveWordAddress
 {
-	public : 
+	public :
 		u16 addr;
 		byte len;
 		u16 *values;
@@ -18,7 +18,7 @@ class ModbusRTUSlaveWordAddress
 
 class ModbusRTUSlaveBitAddress
 {
-	public : 
+	public :
 		u16 addr;
 		byte len;
 		u8 *values;
@@ -27,7 +27,7 @@ class ModbusRTUSlaveBitAddress
 
 class ModbusRTUSlave
 {
-	public : 
+	public :
 		ModbusRTUSlave(byte Slave, HardwareSerial *ser);
 		void begin(int baudrate);
 		boolean addWordArea(u16 Address, u16* values, int cnt);
