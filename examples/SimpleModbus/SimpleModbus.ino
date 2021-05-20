@@ -1,32 +1,21 @@
 #include <ModbusRTUSlave.h>
 
-// size of data which will be read and written
-#define DATA_SIZE 100
-// data array which will be read and written
-u16 _D[DATA_SIZE];
+u16 _D[100];
+u8 _M[50];
 
-// address (kind of name) of above data, may be anything
-#define VIRTUAL_ADDRESS 0x7000
+ModbusRTUSlave rtu(1, &Serial1);
 
-#define OUR_ID_AS_A_SLAVE 101
-#define PIN_CONNECTED_TO_BOTH_DE_AND_RE 3
-
-ModbusRTUSlave rtu(OUR_ID_AS_A_SLAVE, &Serial1, PIN_CONNECTED_TO_BOTH_DE_AND_RE);
-
-void setup()
-{ 
-  rtu.addWordArea(VIRTUAL_ADDRESS, _D, DATA_SIZE);
+void setup() {
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  
+  rtu.addWordArea(0x7000, _D, 100);
+  rtu.addBitArea(0x1000, _M, 50);
   rtu.begin(9600);
-
-  //Serial.begin(9600); // not needed, for logging purpose only
-
-  // set some value in data array to test if master can read and modify it
-  _D[0] = 160;
 }
 
-void loop()
-{
-  // waiting for requests from master
-  // reading and writing _D according to requests from master happens here
+void loop() {
   rtu.process();
+  digitalWrite(3, getBit(_M,0));
+  digitalWrite(4, getBit(_M,1));
 }
